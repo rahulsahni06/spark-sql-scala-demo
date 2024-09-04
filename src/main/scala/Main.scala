@@ -17,18 +17,13 @@
  * under the License.
  */
 
-import RddExample.{calculateSpatialColocation, visualizeSpatialColocation}
 import TigerRddExample.{runTigerQuery}
-import SqlExample._
-import VizExample._
-import org.apache.log4j.{Level, Logger}
 import org.apache.sedona.spark.SedonaContext
 import org.apache.sedona.viz.core.Serde.SedonaVizKryoRegistrator
 import org.apache.sedona.viz.sql.utils.SedonaVizRegistrator
 
 
 object Main extends App {
-  Logger.getRootLogger().setLevel(Level.ALL)
 
   val config = SedonaContext.builder().appName("SedonaSQL-demo")
     .config("spark.kryo.registrator", classOf[SedonaVizKryoRegistrator].getName)

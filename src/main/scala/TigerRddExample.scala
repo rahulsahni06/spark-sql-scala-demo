@@ -20,8 +20,6 @@ import org.apache.sedona.core.spatialRDD.{SpatialRDD}
 import org.apache.spark.sql.SparkSession
 import org.locationtech.jts.geom.Geometry
 
-import java.awt.Color
-
 object TigerRddExample {
 
   val shapeFileLocation = "/srv/nfs_share/tiger_dataset/shape_separate/"
