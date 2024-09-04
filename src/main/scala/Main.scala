@@ -31,34 +31,10 @@ object Main extends App {
   Logger.getRootLogger().setLevel(Level.ALL)
 
   val config = SedonaContext.builder().appName("SedonaSQL-demo")
-    .master("local[*]") // Please comment out this when use it on a cluster
-    .config("spark.driver.host", "127.0.0.1")
-    .config("spark.driver.bindAddress", "127.0.0.1")
     .config("spark.kryo.registrator", classOf[SedonaVizKryoRegistrator].getName)
     .getOrCreate()
   val sedona = SedonaContext.create(config)
-
   SedonaVizRegistrator.registerAll(sedona)
-
-	val resourceFolder = System.getProperty("user.dir")+"/src/test/resources/"
-
-//  testPredicatePushdownAndRangeJonQuery(sedona)
-//  testDistanceJoinQuery(sedona)
-//  testAggregateFunction(sedona)
-//  testShapefileConstructor(sedona)
-//  testRasterIOAndMapAlgebra(sedona)
-//
-//  visualizeSpatialColocation(sedona)
-//  calculateSpatialColocation(sedona)
-//
-//  buildScatterPlot(sedona)
-//  buildHeatMap(sedona)
-//  buildChoroplethMap(sedona)
-//  parallelFilterRenderNoStitch(sedona)
-//  sqlApiVisualization(sedona)
-
-
   runTigerQuery(sedona)
-  System.out.println("All SedonaSQL DEMOs passed!")
-
+  System.out.println("Completed!")
 }

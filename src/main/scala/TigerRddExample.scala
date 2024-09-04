@@ -13,15 +13,10 @@
  * limitations under the License.
  */
 
-import Main.resourceFolder
 import org.apache.sedona.core.enums.{GridType, IndexType}
 import org.apache.sedona.core.formatMapper.shapefileParser.ShapefileReader
 import org.apache.sedona.core.spatialOperator.{JoinQuery, SpatialPredicate}
-import org.apache.sedona.core.spatialRDD.{CircleRDD, SpatialRDD}
-import org.apache.sedona.sql.utils.Adapter
-import org.apache.sedona.viz.core.{ImageGenerator, RasterOverlayOperator}
-import org.apache.sedona.viz.extension.visualizationEffect.{HeatMap, ScatterPlot}
-import org.apache.sedona.viz.utils.ImageType
+import org.apache.sedona.core.spatialRDD.{SpatialRDD}
 import org.apache.spark.sql.SparkSession
 import org.locationtech.jts.geom.Geometry
 
@@ -29,18 +24,18 @@ import java.awt.Color
 
 object TigerRddExample {
 
-  val arealmFileLocation = resourceFolder+"tiger/arealm"
-  val arealWaterFileLocation = resourceFolder+"tiger/areawater"
+  val shapeFileLocation = "/srv/nfs_share/tiger_dataset/shape_separate/"
 
   def runTigerQuery(sedona: SparkSession): Unit =
   {
 
-    // Prepare NYC area landmarks which includes airports, museums, colleges, hospitals
+    val startTime = System.currentTimeMillis()
+
     var arealmRDD = new SpatialRDD[Geometry]()
     var areaWaterRDD = new SpatialRDD[Geometry]()
 
-    arealmRDD = ShapefileReader.readToGeometryRDD(sedona.sparkContext, arealmFileLocation)
-    areaWaterRDD = ShapefileReader.readToGeometryRDD(sedona.sparkContext, arealWaterFileLocation)
+    arealmRDD = ShapefileReader.readToGeometryRDD(sedona.sparkContext, shapeFileLocation + "arealm")
+    areaWaterRDD = ShapefileReader.readToGeometryRDD(sedona.sparkContext, shapeFileLocation + "areawater")
 
     val spatialPredicate = SpatialPredicate.TOUCHES // Only return gemeotries fully covered by each query window in queryWindowRDD
     arealmRDD.analyze()
@@ -51,11 +46,22 @@ object TigerRddExample {
 
     val buildOnSpatialPartitionedRDD = true // Set to TRUE only if run join query
     val usingIndex = true
+
+    val indexStartTime = System.currentTimeMillis()
     areaWaterRDD.buildIndex(IndexType.QUADTREE, buildOnSpatialPartitionedRDD)
     areaWaterRDD.indexedRDD = areaWaterRDD.indexedRDD.cache()
+    val indexEndTime = System.currentTimeMillis()
 
+    val executionStartTime = System.currentTimeMillis()
     val result = JoinQuery.SpatialJoinQuery(arealmRDD, areaWaterRDD, usingIndex, spatialPredicate)
-    System.out.println(result.count())
+    val resultCount = result.count()
+    val executionEndTime = System.currentTimeMillis()
+
+    System.out.println("Total Time: "+ (executionEndTime - startTime) + "ms")
+    System.out.println("Index Time: "+ (indexEndTime - indexStartTime) + "ms")
+    System.out.println("Execution Time: "+ (executionEndTime - executionStartTime) + "ms")
+    System.out.println("Result : "+ resultCount + " Tuples")
+
   }
 }
 
