@@ -22,7 +22,7 @@ import org.locationtech.jts.geom.Geometry
 
 object TigerRddExample {
 
-  val shapeFileLocation = "/dataset/tiger_dataset/shape_separate/"
+  val shapeFileLocation = "/user/rahulsahni/dataset/tiger_dataset/shape_separate/"
 
   def runTigerQuery(sedona: SparkSession): Unit =
   {
