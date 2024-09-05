@@ -35,11 +35,11 @@
 
         <geotools.version>28.2</geotools.version>
         <jt-jiffle.version>1.1.24</jt-jiffle.version>
-        <spark.version>3.4.0</spark.version>
+        <spark.version>3.5.2</spark.version>
         <spark.compat.version>3.4</spark.compat.version>
-        <scala.compat.version>2.12</scala.compat.version>
+        <scala.compat.version>2.13</scala.compat.version>
         <sedona.version>1.5.1</sedona.version>
-        <hadoop.version>3.3.4</hadoop.version>
+        <hadoop.version>3.4.0</hadoop.version>
     </properties>
 
     <dependencies>
